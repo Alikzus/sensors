@@ -1,0 +1,52 @@
+#!/usr/bin/env perl
+#
+# Copyright (c) 2014-2015, Joel A. Nilsson <joel@alikzus.se>
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+# FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+#
+
+use 5.18.2;
+use warnings;
+use autodie;
+
+my $DEBUG = 0;
+
+system( "/usr/bin/logger", "-t", "UPS", "Starting to execute the shutdown script." ) if $DEBUG;
+
+my $battery_level = shift @ARGV;
+my $battery_limit = shift @ARGV;
+
+exit if $battery_level > $battery_limit;
+
+system( "/usr/bin/logger", "-t", "UPS", "The battery level is too low." ) if $DEBUG;
+
+my $ac_present  = `sysctl -n hw.sensors.upd0.indicator0`;
+my $charging    = `sysctl -n hw.sensors.upd0.indicator1`;
+my $discharging = `sysctl -n hw.sensors.upd0.indicator2`;
+
+exit if $ac_present =~ m/^On/;
+system( "/usr/bin/logger", "-t", "UPS", "No AC is present." ) if $DEBUG;
+
+exit if $charging =~ m/^On/;
+system( "/usr/bin/logger", "-t", "UPS", "The battery is not charging." ) if $DEBUG;
+
+exit if $discharging =~ m/^Off/;
+system( "/usr/bin/logger", "-t", "UPS", "The battery is discharging." ) if $DEBUG;
+
+system( "/usr/bin/logger", "-t", "UPS", "Low battery; shutting down..." );
+system( "/usr/local/bin/pushover", "${HOST}","UPS Battery low; shutting down..." );
+
+exec( "halt", "-p" );
+
+################################################################################
+# Last updated: 2015-08-24 20:48:36 CEST
