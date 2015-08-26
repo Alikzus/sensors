@@ -17,9 +17,9 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
+_HOST=`/bin/hostname -s`
 /usr/bin/logger -t RAID Error!
-
-/usr/local/bin/pushover ${HOST} "RAID Error!"
+/usr/local/bin/pushover ${_HOST} "RAID Error!"
 
 ################################################################################
-# Last updated: 2015-08-24 20:46:00 CEST
+# Last updated: 2015-08-26 18:18:23 CEST

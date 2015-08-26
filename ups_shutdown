@@ -21,6 +21,8 @@ use autodie;
 
 my $DEBUG = 0;
 
+my $HOST = $ENV{'HOST'};
+
 system( "/usr/bin/logger", "-t", "UPS", "Starting to execute the shutdown script." ) if $DEBUG;
 
 my $battery_level = shift @ARGV;
@@ -44,9 +46,9 @@ exit if $discharging =~ m/^Off/;
 system( "/usr/bin/logger", "-t", "UPS", "The battery is discharging." ) if $DEBUG;
 
 system( "/usr/bin/logger", "-t", "UPS", "Low battery; shutting down..." );
-system( "/usr/local/bin/pushover", "${HOST}","UPS Battery low; shutting down..." );
+system( "/usr/local/bin/pushover", "$HOST","UPS Battery low; shutting down..." );
 
 exec( "halt", "-p" );
 
 ################################################################################
-# Last updated: 2015-08-24 20:48:36 CEST
+# Last updated: 2015-08-26 18:20:55 CEST
