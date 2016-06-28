@@ -41,16 +41,16 @@ if ( `sysctl -n hw.sensors.upd0.indicator1` =~ m/^On/ ) {
 }
 
 # Shutdown if the UPS is offline, otherwise do nothing.
-my @LOGGER = ( '/usr/bin/logger', '-t', 'sensorsd' );
+my @LOGGER = ( '/usr/bin/logger', '-t', 'UPS' );
 if ( !$ac_present && !$charging && $discharging ) {
-    system( @LOGGER, 'UPS offline' );
+    system( @LOGGER, 'Offline' );
     exec( 'halt', '-p' );
 } 
 else {
-    system( @LOGGER, 'UPS online' );
+    system( @LOGGER, 'Online' );
 }
 
 exit;
 
 ################################################################################
-# Last updated: 2017-06-24 13:37:00 CEST
+# Last updated: 2016-06-28 14:34:21 CEST
