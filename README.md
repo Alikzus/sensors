@@ -1,2 +1,1 @@
-# sensors
-Scripts executed by OpenBSD's sensorsd(8)
+This repository has been moved to https://git.alikzus.se.
